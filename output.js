@@ -17,21 +17,38 @@
 })({
   0: [
     function (require, module, exports) {
-      import message from "./message.js";
-      console.log(message);
+      "use strict";
+
+      var _message = _interopRequireDefault(require("./message.js"));
+      function _interopRequireDefault(obj) {
+        return obj && obj.__esModule ? obj : { default: obj };
+      }
+      console.log(_message["default"]);
     },
     { "./message.js": 1 },
   ],
   1: [
     function (require, module, exports) {
-      import { name } from "./name.js";
-      export default `hello ${name}!`;
+      "use strict";
+
+      Object.defineProperty(exports, "__esModule", {
+        value: true,
+      });
+      exports["default"] = void 0;
+      var _name = require("./name.js");
+      var _default = (exports["default"] = "hello ".concat(_name.name, "!"));
     },
     { "./name.js": 2 },
   ],
   2: [
     function (require, module, exports) {
-      export const name = "world";
+      "use strict";
+
+      Object.defineProperty(exports, "__esModule", {
+        value: true,
+      });
+      exports.name = void 0;
+      var name = (exports.name = "world");
     },
     {},
   ],
