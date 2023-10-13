@@ -29,7 +29,9 @@ async function createAsset(filename) {
     },
   });
 
-  const { code } = await transformFromAstAsync(ast, null);
+  const { code } = await transformFromAstAsync(ast, null, {
+    presets: ["@babel/preset-env"],
+  });
 
   const id = ID++;
 
@@ -59,5 +61,39 @@ async function createGraph(entry) {
   return queue;
 }
 
+function bundle(graph) {
+  let modules = "";
+  // log(graph);
+  graph.forEach((mod) => {
+    modules += `${mod.id}: [
+      function (require, module, exports) {
+        ${mod.code}
+      },
+      ${JSON.stringify(mod.mapping)},
+    ],`;
+  });
+  const result = `
+  (function(modules) {
+    function require(id) {
+      const [fn, mapping] = modules[id];
+
+      function localRequire(name) {
+        return require(mapping[name]);
+      }
+
+      const module = { exports : {} };
+
+      fn(localRequire, module, module.exports);
+
+      return module.exports;
+    }
+
+    require(0);
+  })({${modules}})
+`;
+  return result;
+}
+
 const r = await createGraph(filename);
-log(r);
+const res = bundle(r);
+log(res);
